@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "c5cab0f7-94c5-4266-aad5-9838a42cd6d3": {
+      "ProjectGuid": "c5cab0f7-94c5-4266-aad5-9838a42cd6d3",
+      "DisplayName": "transforms_omp",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}
