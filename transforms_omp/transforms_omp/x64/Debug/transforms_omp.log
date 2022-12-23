@@ -1,7 +1,7 @@
 ﻿  transforms_omp.cpp
-C:\Users\lenovo\Desktop\STUDY\4ND YEAR\CourseWork_Izmailov\transforms_omp\transforms_omp\transforms_omp.cpp(116,27): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\lenovo\Desktop\STUDY\4ND YEAR\CourseWork_Izmailov\transforms_omp\transforms_omp\transforms_omp.cpp(119,37): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\lenovo\Desktop\STUDY\4ND YEAR\CourseWork_Izmailov\transforms_omp\transforms_omp\transforms_omp.cpp(134,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\lenovo\Desktop\STUDY\4ND YEAR\CourseWork_Izmailov\transforms_omp\transforms_omp\transforms_omp.cpp(136,32): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\lenovo\Desktop\STUDY\4ND YEAR\CourseWork_Izmailov\transforms_omp\transforms_omp\transforms_omp.cpp(484,14): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\lenovo\Desktop\STUDY\4ND YEAR\CourseWork_Izmailov\transforms_omp\transforms_omp\transforms_omp.cpp(126,27): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\lenovo\Desktop\STUDY\4ND YEAR\CourseWork_Izmailov\transforms_omp\transforms_omp\transforms_omp.cpp(129,37): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\lenovo\Desktop\STUDY\4ND YEAR\CourseWork_Izmailov\transforms_omp\transforms_omp\transforms_omp.cpp(144,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\lenovo\Desktop\STUDY\4ND YEAR\CourseWork_Izmailov\transforms_omp\transforms_omp\transforms_omp.cpp(146,32): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\lenovo\Desktop\STUDY\4ND YEAR\CourseWork_Izmailov\transforms_omp\transforms_omp\transforms_omp.cpp(593,14): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
   transforms_omp.vcxproj -> C:\Users\lenovo\Desktop\STUDY\4ND YEAR\CourseWork_Izmailov\transforms_omp\x64\Debug\transforms_omp.exe

@@ -2,7 +2,10 @@
 #include <omp.h>
 #include <stdlib.h>
 #include <windows.h>
+#include<fstream>
+
 using namespace std;
+const int N = 8; // 8,000 is a good number for testing
 
 // dft
 // two pi
@@ -40,9 +43,9 @@ void DFT(int idft, double* xr, double* xi, double* Xr_o, double* Xi_o, int N) {
             Xi_o[k] += -idft * xr[n] * sin(n * k * PI2 / N) + xi[n] * cos(n * k * PI2 / N);
         }
     }
-    for (int n = 0; n < N; n++) {
-        printf("% f \n +", Xr_o[n]);
-    }
+    //for (int n = 0; n < N; n++) {
+    //    printf("% f \n +", Xr_o[n]);
+    //}
     printf("Invers");
 
     // normalization for IDFT
@@ -57,15 +60,15 @@ void DFT(int idft, double* xr, double* xi, double* Xr_o, double* Xi_o, int N) {
             //printf("% f \n -", Xr_o[n]);
 
         }
-        for (int n = 0; n < N; n++) {
-            printf("% f \n", Xi_o[n]);
-        }
+        //for (int n = 0; n < N; n++) {
+        //    printf("% f \n", Xi_o[n]);
+        //}
     }
 }
 
 // set the initial signal 
 // careful rand() is NOT thread safe
-void fillInput(double* xr, double* xi, int N) {
+void fillInputDFT(double* xr, double* xi, int N) {
     //srand(GetTickCount64());
     for (int n = 0; n < N; n++) {
         // Generate random discrete-time signal x in range (-1,+1)
@@ -88,7 +91,7 @@ void setOutputZero(double* Xr_o, double* Xi_o, int N) {
 }
 
 // check if x = IDFT(DFT(x))
-void checkResults(double* xr, double* xi, double* xr_check, double* xi_check, double* Xr_o, double* Xi_r, int N) {
+void checkResultsDFT(double* xr, double* xi, double* xr_check, double* xi_check, double* Xr_o, double* Xi_r, int N) {
     // x[0] and x[1] have typical rounding error problem
     // interesting there might be a theorem on this
     for (int n = 0; n < N; n++) {
@@ -99,14 +102,21 @@ void checkResults(double* xr, double* xi, double* xr_check, double* xi_check, do
     }
     printf("Xre[0] = %f \n", Xr_o[0]);
 }
+void checkResults(double* x, double* x_transf, int N) {
+    // x[0] and x[1] have typical rounding error problem
+    // interesting there might be a theorem on this
+    for (int n = 0; n < N; n++) {
+        if (fabs(x[n] - x_transf[n]) > R_ERROR)
+            //printf("ERROR - x[%d] = %f, inv(X)[%d]=%f \n", n, xr[n], n, xr_check[n]);
+            printf("!");
+    }
+}
 
 // print the results of the DFT
 void printResults(double* xr, double* xi, int N) {
     for (int n = 0; n < N; n++)
         printf("Xre[%d] = %f, Xim[%d] = %f \n", n, xr[n], n, xi[n]);
 }
-
-
 
 void DCT(double in[], int m, int N) {
     float csum = 0;
@@ -119,7 +129,7 @@ void DCT(double in[], int m, int N) {
         else if ((!i) || (i)) k = 1 / sqrt(2);
         else k = 1;
         dct[i] = 2 * csum * k;
-        printf("%.3f ", dct[i]);
+        //printf("%.3f ", dct[i]);
         csum = 0;
         //}
         //printf("\n");
@@ -137,7 +147,7 @@ void IDCT(double in[], int m, int N) {
         }
         idct[i] = csum * 2 / m;
         csum = 0;
-        printf("%0.3f ", idct[i]);
+        //printf("%0.3f ", idct[i]);
     }
 }
 
@@ -218,14 +228,13 @@ void haar_1d(int n, double x[])
         }
 
     }
-    for (int i = 0; i < 15; i++) {
-        printf("B[%d] = %.5f:\n", i, y[i]);
-    }
+    //for (int i = 0; i < 15; i++) {
+    //    printf("B[%d] = %.5f:\n", i, y[i]);
+    //}
     delete[] y;
 
     return;
 }
-
 void haar_1d_inverse(int n, double x[])
 
 //****************************************************************************80
@@ -291,14 +300,13 @@ void haar_1d_inverse(int n, double x[])
         }
         k = k * 2;
     }
-    for (int i = 0; i < 15; i++) {
-        printf("B[%d] = %.5f:\n", i, y[i]);
-    }
+    //for (int i = 0; i < 15; i++) {
+    //    printf("B[%d] = %.5f:\n", i, y[i]);
+    //}
     delete[] y;
 
     return;
 }
-
 
 void walsh_hadamard(double A[], int n_qbits, int N) {
     A[0] = 1.0; // Initialized to |000..00> 
@@ -332,12 +340,12 @@ void walsh_hadamard(double A[], int n_qbits, int N) {
             for (int i = 0; i < N; ++i) { A[i] = B[i]; }
         }
     }
-    for (int i = 0; i < N; i++) {
-        printf("B[%d] = %.5f:\n", i, B[i]);
-    }
+    //for (int i = 0; i < N; i++) {
+    //    printf("B[%d] = %.5f:\n", i, B[i]);
+    //}
 }
 
-void transform(double* a, const int n)
+void dw4_transform(double* a, const int n)
 {
     if (n >= 4) {
         int i, j;
@@ -362,7 +370,7 @@ void transform(double* a, const int n)
         delete[] tmp;
     }
 }
-void invTransform(double* a, const int n)
+void dw4_invTransform(double* a, const int n)
 {
     if (n >= 4) {
         int i, j;
@@ -389,107 +397,217 @@ void invTransform(double* a, const int n)
     }
 }
 
-void fillInp(double* xr, int N) {
+void fillInput(double* xr, double* x_check, int N) {
     //srand(GetTickCount64());
     for (int n = 0; n < N; n++) {
         //xr[n] = (rand() % 255 + 1);
         xr[n] = n;
-        printf("%0.1f ", xr[n]);
+        x_check[n] = n;
+        //printf("%0.1f ", xr[n]);
 
     }
 
 }
 
-int main()
+struct three_alloc_val {
+    double* x;
+    double* x_transf;
+    double* x_check;
+};
+
+three_alloc_val doubleAlloc()
 {
-    setlocale(0, "");
-    SetConsoleOutputCP(1251);
-    SetConsoleCP(1251);
+    three_alloc_val return_me;
 
-    // size of input array
-    const int N = 9; // 8,000 is a good number for testing
+    return_me.x = new double[N];
+    return_me.x_transf = new double[N];
+    return_me.x_check = new double[N];
+    return return_me;
+}
+
+void new_arr(double* x, double* x_transf, int N) {
+    for (int i = 0; i < N; i++) {
+        x_transf[i] = x[i];
+    }
+}
+
+void write_in_files(double* x, double* x_transf, string name_transf, double run_time, int N) {
+    // this code add values to top 
+    string nameTransf = name_transf + string("_transform.csv");
+    string nameNewTransf = name_transf + string("_new_transform.csv");
+
+    ofstream myFile;
+    if (!myFile)
+    {
+        myFile.open(nameTransf, ios::app);
+        for (int i = 0; i < N; i++)
+        {
+            myFile << x_transf[i] << ";" << x[i] << endl;
+        }
+        myFile.close();
+    }
+    else
+    {
+        ofstream myFileN(nameNewTransf);
+        ifstream myFile(nameTransf);
+
+        myFileN << name_transf + '\n';
+        myFileN << "Time - " << ";" << run_time << endl;
+
+        for (int i = 0; i < N; i++)
+        {
+            myFileN << x_transf[i] << ";" << x[i] << endl;
+        }  // Write new data after header
+        myFileN << myFile.rdbuf(); // Write rest of data
+
+        myFile.close();
+        myFileN.close();/*
+        remove(name);
+        rename("test_fresh_transform.csv", "test_transform.csv");*/
+    }
+
+
+    // for time results
+    string nameRes = name_transf + string("_res.csv");
+    string nameNewRes = name_transf + string("_new_res.csv");
+
+    ofstream myFileRes;
+    if (!myFileRes)
+    {
+        myFileRes.open(nameRes, ios::app);
+        myFileRes << run_time << endl;
+        myFileRes.close();
+    }
+    else
+    {
+        ofstream myFileResN(nameNewRes);
+        ifstream myFileRes(nameRes);
+
+
+        myFileResN << run_time << endl;// Write new data after header
+        myFileResN << myFileRes.rdbuf(); // Write rest of data
+
+        myFileRes.close();
+        myFileResN.close();
+        /* remove("test_res.csv");
+         rename("test_fresh_res.csv", "test_res.csv");*/
+    }
+}
+
+void DFT_call() {
     printf("DFTW calculation with N = %d \n", N);
-//
-//    // Allocate array for input vector
-//    double* xr = new double[N];
-//    double* xi = new double[N];
-//    fillInput(xr, xi, N);
-//
-//    // for checking purposes
-//    double* xr_check = new double[N];
-//    double* xi_check = new double[N];
-//    setOutputZero(xr_check, xi_check, N);
-//
-//    // Allocate array for output vector
-//    double* Xr_o = new double[N];
-//    double* Xi_o = new double[N];
-//    setOutputZero(Xr_o, Xi_o, N);
-//
-//    // start timer
-//    double start_time = omp_get_wtime();
-//
-//    // DFT
-//    int idft = 1;
-//    DFT(idft, xr, xi, Xr_o, Xi_o, N);
-//    // IDFT
-//    idft = -1;
-//    DFT(idft, Xr_o, Xi_o, xr_check, xi_check, N);
-//
-//    // stop timer
-//    double run_time = omp_get_wtime() - start_time;
-//    printf("DFTW computation in %f seconds\n", run_time);
-//
-//    // check the results: easy to make correctness errors with openMP
-//    checkResults(xr, xi, xr_check, xi_check, Xr_o, Xi_o, N);
-//    //print the results of the DFT
-//#ifdef DEBUG
-//    printResults(Xr_o, Xi_o, N);
-//#endif
-//
-//    // take out the garbage
-//    delete[] xr; delete[] xi;
-//    delete[] Xi_o; delete[] Xr_o;
-//    delete[] xr_check; delete[] xi_check;
-//
-//    //ftime = omp_get_wtime();
-//    //exec_time = ftime - itime;
-//    //printf("\n\nTime taken is %f", exec_time);
+    
+        // Allocate array for input vector
+        double* xr = new double[N];
+        double* xi = new double[N];
+        fillInputDFT(xr, xi, N);
+    
+        // for checking purposes
+        double* xr_check = new double[N];
+        double* xi_check = new double[N];
+        setOutputZero(xr_check, xi_check, N);
+    
+        // Allocate array for output vector
+        double* Xr_o = new double[N];
+        double* Xi_o = new double[N];
+        setOutputZero(Xr_o, Xi_o, N);
+    
+        // start timer
+        double start_time = omp_get_wtime();
+    
+        // DFT
+        int idft = 1;
+        DFT(idft, xr, xi, Xr_o, Xi_o, N);
+        // IDFT
+        idft = -1;
+        DFT(idft, Xr_o, Xi_o, xr_check, xi_check, N);
+    
+        // stop timer
+        double run_time = omp_get_wtime() - start_time;
+        printf("DFTW computation in %f seconds\n", run_time);
+    
+        // check the results: easy to make correctness errors with openMP
+        checkResultsDFT(xr, xi, xr_check, xi_check, Xr_o, Xi_o, N);
+        write_in_files(Xr_o, xr, "dft", run_time, N);
+        //print the results of the DFT
+    #ifdef DEBUG
+        printResults(Xr_o, Xi_o, N);
+    #endif
+    
+        // take out the garbage
+        delete[] xr; delete[] xi;
+        delete[] Xi_o; delete[] Xr_o;
+        delete[] xr_check; delete[] xi_check;
+   
 
 
-    // DCT
-    //int m;
+}
+void DCT_call() {
+    int m;
 
-    //printf("Enter the size of the blocks - space separated\t");
-    //scanf_s("%d", &m);
-    //if (m >= N) {
-    //    printf("Out of bounds\n");
-    //    exit(1);
-    //}
-    //double* in = new double[N];
-    //fillInp(in, N);
-    //DCT(in, m, N);
-    //IDCT(in, m, N);
+    printf("Enter the size of the blocks - space separated\t");
+    scanf_s("%d", &m);
+    if (m >= N) {
+        printf("Out of bounds\n");
+        exit(1);
+}
+    three_alloc_val var = doubleAlloc();
 
 
-    // haar
-    //double* xr = new double[N];
-    //fillInp(xr, N);
+    fillInput(var.x, var.x_check, N);
 
-    //haar_1d(N, xr);
-    //haar_1d_inverse(N, xr);
+    // start timer
+    double start_time = omp_get_wtime();
+    DCT(var.x, m, N);
+    // stores intermediate values for later access and output
+    new_arr(var.x, var.x_transf, N);
+    IDCT(var.x, m, N);
 
+    // stop timer, print duration
+    double run_time = omp_get_wtime() - start_time;
+    printf("DFTW computation in %f seconds\n", run_time);
 
-    // wh
+    checkResults(var.x, var.x_check, N);
+    write_in_files(var.x_transf, var.x, "cos", run_time, N);
+
+}
+void dw2_haar_call() {
+    three_alloc_val var = doubleAlloc();
+    fillInput(var.x, var.x_check, N);
+
+   // start timer
+   double start_time = omp_get_wtime();
+   haar_1d(N, var.x);
+   // stores intermediate values for later access and output
+   new_arr(var.x, var.x_transf, N);
+   haar_1d_inverse(N, var.x);
+   // stop timer
+   double run_time = omp_get_wtime() - start_time;
+   printf("DFTW computation in %f seconds\n", run_time);
+
+   checkResults(var.x, var.x_check, N);
+   write_in_files(var.x_transf, var.x, "haar", run_time, N);
+}
+void walsh_hadamard_call() {
     int n_qbits = 3;
     int N_wh = pow(2, n_qbits);
-    double* A = new double[N_wh];
-    fillInp(A, N_wh);
-    walsh_hadamard(A, n_qbits, N_wh);
+    double* x = new double[N_wh];
+    double* x_transf = new double[N_wh];
+    fillInput(x, x_transf, N_wh);
 
-    // d4
+    // start timer
+    double start_time = omp_get_wtime();
+    walsh_hadamard(x, n_qbits, N_wh);
+    // stop timer
+    double run_time = omp_get_wtime() - start_time;
+    printf("DFTW computation in %f seconds\n", run_time);
+
+    //checkResults(var.x, var.x_check, N);
+    write_in_files(x_transf, x, "wh", run_time, N);
+}
+void dw4_call() {
     const double sqrt_3 = sqrt(3);
     const double denom = 4 * sqrt(2);
-
     //
     // forward transform scaling (smoothing) coefficients
     //
@@ -515,15 +633,61 @@ int main()
     Ig2 = h1;
     Ig3 = g1;  // -h2
 
+    three_alloc_val var = doubleAlloc();
+    fillInput(var.x, var.x_check, N);
+    // start timer
+    double start_time = omp_get_wtime();
+    dw4_transform(var.x, N-1);
+    // stores intermediate values for later access and output
+    new_arr(var.x, var.x_transf, N);
+    dw4_invTransform(var.x, N-1);
+    // stop timer
+    double run_time = omp_get_wtime() - start_time;
+    printf("DFTW computation in %f seconds\n", run_time);
 
+    //checkResults(var.x, var.x_check, N);
+    write_in_files(var.x_transf, var.x, "dw4", run_time, N);
+}
 
- 
-    double* xr = new double[N];
-    fillInp(xr, N);
+int main()
+{
+    setlocale(0, "");
+    SetConsoleOutputCP(1251);
+    SetConsoleCP(1251);
 
-    transform(xr, N-1);
-    invTransform(xr, N-1);
+    int transform_number;
+    char ans = 'N';
+    //scanf_s("%", &ans);
 
+    do
+    {
+    printf("Enter the transform number (choose transform):\t");
+    scanf_s("%d", &transform_number);
+
+    switch (transform_number)
+    {
+    case 0:
+        DFT_call();
+        break;
+    case 1:
+        DCT_call();
+        break;
+    case 2:
+        dw2_haar_call();
+        break;
+    case 3:
+        walsh_hadamard_call();
+        break;
+    case 4:
+        dw4_call();
+        break;
+    default:
+        break;
+    }
+
+    printf("Do you want to continue (Y/N)?):\n");
+    cin>>ans;
+} while ((ans == 'Y') || (ans == 'y'));
     //system("pause");
     return 0;
 }
